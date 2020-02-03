@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# -----------------------------------------------------------------------------
 # BootCampのディスクのidentifier
 DISK_IDENTIFIER=/dev/disk0s3
 # VirtualBox のディレクトリ
@@ -13,6 +14,7 @@ if [ $# -ne 6 ]; then
     exit 1
 fi
 
+# -----------------------------------------------------------------------------
 DISK_IDENTIFIER=$2
 VBOX_DIR=$4
 VM_NAME=$6
@@ -34,7 +36,9 @@ if [ ! -e ${DISK_IDENTIFIER} ]; then
 fi
 
 # 指定のディレクトリがなければ作る
-if [ ! -e ${VBOX_DIR} ]; then mkdir ${VBOX_DIR} fi
+if [ ! -e ${VBOX_DIR} ]; then
+    mkdir ${VBOX_DIR}
+fi
 
 # 指定ディレクトリに移動
 cd ${VBOX_DIR}
@@ -49,7 +53,7 @@ sudo umount ${DISK_IDENTIFIER}
 sudo VBoxManage internalcommands createrawvmdk -rawdisk ${RAW_DISK} -filename ${VMDK_NAME} -partitions ${DISK_PARTITION}
 
 # VMDK のユーザー変更
-sudo chown ${LOGNAME} *.vmdk
+sudo chown `logname` *.vmdk
 sudo chmod 666 *.vmdk
 
 # VM を作成
@@ -59,7 +63,7 @@ VBoxManage createvm --name ${VM_NAME} \
  --register
 
 # VMのディレクトリの権限をユーザーに
-sudo chown ${LOGNAME} ${VBOX_DIR}/${VM_NAME}
+sudo chown `logname` ${VBOX_DIR}/${VM_NAME}
 sudo chmod 777 ${VBOX_DIR}/${VM_NAME}
 
 # VMの設定を編集
@@ -70,7 +74,7 @@ VBoxManage modifyvm ${VM_NAME}\
  --rtcuseutc on \
  --firmware bios \
  --audio coreaudio \
- --clipboard bidirectional \
+ --clipboard-mode bidirectional \
  --draganddrop hosttoguest \
  --usbehci on
 
